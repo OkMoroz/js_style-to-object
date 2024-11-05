@@ -6,26 +6,24 @@
  * @return {object}
  */
 function convertToObject(sourceString) {
-  const styleObject = {};
-  const cleanStrings = sourceString
+  if (typeof sourceString !== 'string') {
+    throw new Error('Input must be a string');
+  }
+
+  return sourceString
     .trim()
     .split(';')
-    .filter((style) => style.length);
+    .reduce((styleObject, cleanString) => {
+      const partsOfString = cleanString.split(':');
+      const key = partsOfString[0]?.trim();
+      const value = partsOfString[1]?.trim();
 
-  cleanStrings.forEach((cleanString) => {
-    const partsOfString = cleanString
-      .split(':')
-      .map((partStyle) => partStyle.trim());
+      if (key && value) {
+        styleObject[key] = value;
+      }
 
-    const key = partsOfString[0];
-    const value = partsOfString[1];
-
-    if (key && value) {
-      styleObject[key] = value;
-    }
-  });
-
-  return styleObject;
+      return styleObject;
+    }, {});
 }
 
 module.exports = convertToObject;
